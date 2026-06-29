@@ -1,3 +1,4 @@
+# Menú principal del sistema
 def mostrar_menu():
     print("\n" + "=" * 50)
     print(" ******* SISTEMA DE GESTIÓN DE PRODUCTOS ******* ")

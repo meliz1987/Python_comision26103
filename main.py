@@ -2,6 +2,7 @@ from persistencia import *
 from menu import mostrar_menu
 from util import pedir_entero, pedir_float
 
+# Crea la tabla al iniciar el programa
 crear_tabla()
 
 

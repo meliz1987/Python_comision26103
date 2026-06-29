@@ -1,11 +1,11 @@
 import sqlite3
 
-
+# Crea la conexión con la DB SQLite
 def conectar():
     conexion = sqlite3.connect("inventario.db")
     return conexion
 
-
+# Crea la tabla productos si todavía no existe
 def crear_tabla():
     conexion = conectar()
     cursor = conexion.cursor()
@@ -27,6 +27,7 @@ def crear_tabla():
 
 crear_tabla()
 
+# Inserta un nuevo producto en la base de datos
 def agregar_producto(nombre, descripcion, cantidad, precio, categoria):
     conexion = conectar()
     cursor = conexion.cursor()
@@ -83,6 +84,7 @@ def buscar_producto_por_id(id_producto):
 
     return producto
 
+# Elimina un producto de la base de datos
 def eliminar_producto(id_producto):
     conexion = conectar()
     cursor = conexion.cursor()
