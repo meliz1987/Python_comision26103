@@ -4,6 +4,7 @@ Proyecto final realizado para el curso de Python de Talento Tech
 La aplicación permite gestionar un inventario de productos mediante una interfaz de consola y una base de datos SQLite (inventario.db).
 
 Funcionalidades principales:
+
 *Registrar productos.
 *Visualizar productos registrados.
 *Buscar productos por ID.
