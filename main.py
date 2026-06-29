@@ -12,11 +12,11 @@ while True:
 
     if option == "1":
         print("\n *** ➕ Agregar Producto *** ")
-        nombre = input("Nombre: ")
-        descripcion = input("Descripción: ")
+        nombre = input("Nombre: ").strip()
+        descripcion = input("Descripción: ").strip()
         cantidad = pedir_entero("Cantidad: ")
         precio = pedir_float("Precio:$ ")
-        categoria = input("Categoría: ")
+        categoria = input("Categoría: ").strip()
 
         agregar_producto(nombre, descripcion, cantidad, precio, categoria)
 
@@ -24,10 +24,31 @@ while True:
 
     elif option == "2":
         print("\n *** 📝 Lista de Productos *** ")
-
         productos = obtener_productos()
-        for p in productos:
-            print(p)
+
+        if len(productos) == 0:
+            print("🙁 No hay productos registrados")
+        else:
+            print(
+                f"{'ID':<5}"
+                f"{'Nombre':<30}"
+                f"{'Cantidad':<10}"
+                f"{'Precio':<12}"
+                f"{'Categoría':<15}"
+            )
+
+            print("-" * 75)
+
+            for producto in productos:
+                print(
+                    f"{producto[0]:<5}"
+                    f"{producto[1]:<30}"
+                    f"{producto[3]:<10}"
+                    f"${producto[4]:<11.2f}"
+                    f"{producto[5]:<15}"
+                )
+
+            print("-" * 75)
 
     elif option == "3":
         print("\n *** 🔎 Buscar Productos *** ")
@@ -35,15 +56,26 @@ while True:
         producto = buscar_producto_por_id(id_producto)
 
         if producto:
-            print(producto)
+            print("\n🕵🏻‍♀️ Producto encontrado:")
+            print(f"ID: {producto[0]}")
+            print(f"Nombre: {producto[1]}")
+            print(f"Descripción: {producto[2]}")
+            print(f"Cantidad: {producto[3]}")
+            print(f"Precio: $ {producto[4]:.2f}")
+            print(f"Categoría: {producto[5]}")
         else:
             print("❌ No se encontró un producto con ese ID.")
 
     elif option == "4":
         print("\n *** 🗑️ Eliminar Productos *** ")
         id_producto = pedir_entero("ID a eliminar: ")
-        eliminar_producto(id_producto)
-        print(f"✅ Producto '{producto[1]}' eliminado correctamente.")
+        producto = buscar_producto_por_id(id_producto)
+
+        if producto:
+            eliminar_producto(id_producto)
+            print(f"✅ Producto '{producto[1]}' eliminado correctamente.")
+        else:
+            print("❌ No existe un producto con ese ID.")
     
     elif option == "5":
         print("\n *** ✏️ Actualizar Producto *** ")
@@ -66,9 +98,23 @@ while True:
         print("\n *** 📦 Reporte de Stock Bajo *** ")
         limite = pedir_entero("Límite: ")
         productos = obtener_productos_stock_bajo(limite)
-        for p in productos:
-            print(p)
 
+        if len(productos) == 0:
+            print("✅ No hay productos con stock bajo.")
+        else:
+            print(
+                f"{'ID':<5}"
+                f"{'Nombre':<30}"
+                f"{'Cantidad':<10}"
+            )
+            print("-" * 45)
+
+            for producto in productos:
+                print(
+                    f"{producto[0]:<5}"
+                    f"{producto[1]:<30}"
+                    f"{producto[3]:<10}"
+                )
     elif option == "7":
             print("☺️ Gracias por usar el sistema de gestión de Productos ")
             break
