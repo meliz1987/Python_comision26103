@@ -53,6 +53,21 @@ def obtener_productos():
     conexion.close()
 
     return productos
+def obtener_productos_stock_bajo(limite):
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    cursor.execute(
+        "SELECT * FROM productos WHERE cantidad <= ?",
+        (limite,)
+    )
+
+    productos = cursor.fetchall()
+
+    conexion.close()
+
+    return productos
+
 def buscar_producto_por_id(id_producto):
     conexion = conectar()
     cursor = conexion.cursor()
@@ -67,6 +82,7 @@ def buscar_producto_por_id(id_producto):
     conexion.close()
 
     return producto
+
 def eliminar_producto(id_producto):
     conexion = conectar()
     cursor = conexion.cursor()
@@ -82,6 +98,30 @@ def eliminar_producto(id_producto):
 
     return filas_afectadas
 
+def actualizar_producto(id_producto, nombre, descripcion, cantidad, precio, categoria):
+    conexion = conectar()
+    cursor = conexion.cursor()
+
+    cursor.execute(
+        """
+        UPDATE productos
+        SET nombre = ?,
+            descripcion = ?,
+            cantidad = ?,
+            precio = ?,
+            categoria = ?
+        WHERE id = ?
+        """,
+        (nombre, descripcion, cantidad, precio, categoria, id_producto)
+    )
+
+    conexion.commit()
+    filas_afectadas = cursor.rowcount
+    conexion.close()
+
+    return filas_afectadas
+
+
 
 while True:
     print("\n" + "=" * 50)
@@ -91,9 +131,11 @@ while True:
     print("2. Ver producto")
     print("3. Buscar producto")
     print("4. Eliminar producto")
-    print("5. Salir")
+    print("5. Actualizar producto")
+    print("6. Reporte de stock bajo")
+    print("7. Salir")
 
-    option = input("seleccione una opción (1 - 5): ")
+    option = input("seleccione una opción (1 - 7): ")
 
     if option == "1":
         print("\n *** ➕ Agregar Producto *** ")
@@ -178,9 +220,87 @@ while True:
 
         except ValueError:
             print("❌ Debe ingresar un número.")
-
+    
     elif option == "5":
-        print("☺️ Gracias por usar el sistema de gestión de Productos ")
-        break
+        print("\n *** ✏️ Actualizar Producto *** ")
+
+        try:
+            id_producto = int(input("Ingrese el ID del producto: "))
+
+            producto = buscar_producto_por_id(id_producto)
+
+            if producto:
+                print("Deje el dato vacío si desea mantener el valor actual.\n")
+
+                nombre = input(f"Nombre [{producto[1]}]: ")
+                descripcion = input(f"Descripción [{producto[2]}]: ")
+                cantidad = input(f"Cantidad [{producto[3]}]: ")
+                precio = input(f"Precio [{producto[4]}]: ")
+                categoria = input(f"Categoría [{producto[5]}]: ")
+
+                if nombre == "":
+                    nombre = producto[1]
+
+                if descripcion == "":
+                    descripcion = producto[2]
+
+                if cantidad == "":
+                    cantidad = producto[3]
+                else:
+                    cantidad = int(cantidad)
+
+                if precio == "":
+                    precio = producto[4]
+                else:
+                    precio = float(precio)
+
+                if categoria == "":
+                    categoria = producto[5]
+
+                actualizar_producto(
+                    id_producto,
+                    nombre,
+                    descripcion,
+                    cantidad,
+                    precio,
+                    categoria
+                )
+
+                print("✅ Producto actualizado correctamente.")
+
+            else:
+                print("❌ No existe un producto con ese ID.")
+
+        except ValueError:
+            print("❌ Debe ingresar datos válidos.")
+
+    elif option == "6":
+        print("\n *** 📦 Reporte de Stock Bajo *** ")
+
+        try:
+            limite = int(input("Ingrese el límite de stock: "))
+
+            productos = obtener_productos_stock_bajo(limite)
+
+            if len(productos) == 0:
+                print("✅ No hay productos con stock bajo.")
+            else:
+                print(
+                    f"{'ID':<5}{'Nombre':<30}{'Cantidad':<10}"
+                )
+                print("-" * 45)
+
+                for producto in productos:
+                    print(
+                        f"{producto[0]:<5}"
+                        f"{producto[1]:<30}"
+                        f"{producto[3]:<10}"
+                    )
+        except ValueError:
+            print("❌ Debe ingresar un número.")
+
+    elif option == "7":
+            print("☺️ Gracias por usar el sistema de gestión de Productos ")
+            break
     else:
-        print("❌ Opción no válida, ingrese un número del 1 al 5 ")
+            print("❌ Opción no válida, ingrese un número del 1 al 7 ")
